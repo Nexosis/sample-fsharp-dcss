@@ -1,0 +1,10 @@
+packages
+*.suo
+.DS_Store
+.paket/paket.exe
+api-key.secret
+/obj
+/output
+/bin
+/.fake
+/Sessions/*
