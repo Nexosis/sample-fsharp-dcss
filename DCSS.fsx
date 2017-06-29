@@ -14,7 +14,7 @@ open DownloadPlayerData
 open NexosisApiIntegration
 
 (**
-# Tournament impact impact of Dungeon Crawl Stone Soup 
+# Impact of Tournaments in Dungeon Crawl Stone Soup 
 
 [Dungeon Crawl Stone Soup](https://crawl.develz.org/) is a roguelike game which has been in active open source development since 2006.  The game can be downloaded and played locally, or it can be played online in a web browser.  In this example, we are going to take a look at online games from one of the servers, [http://crawl.akrasiac.org](http://crawl.akrasiac.org).  This server has records of games going all the way back to 2006, but, we are only going to look at the last few years of data.  Specifically, we will be looking at what happens to the number of Games, Players, and Wins during tournaments.  We will be using the [Nexosis Api](https://developers.nexosis.com/) to measure impact analysis using machine learning algoritims.  And, we wll be calling the Api from F#.
 
