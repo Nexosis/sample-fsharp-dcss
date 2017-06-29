@@ -7,4 +7,4 @@ script = "build.fsx"
 build = "webpreview"
 startString = "listener started"
 parameters = ["--fsiargs", "-d:NO_FSI_ADDPRINTER"]
-startingPage = "Tutorial.html"
+startingPage = "DCSS.html"

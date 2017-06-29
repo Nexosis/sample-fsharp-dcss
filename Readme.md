@@ -4,7 +4,7 @@ This project is a sample application of the [Nexosis Api](http://nexosis.com/). 
 
 ## Setup
 
-In order to fully use this sample project and generate the Html page output [seen in the blog post](), you will need to follow a few basic steps to run this using your own Nexosis account.
+In order to fully use this sample project and generate the Html page output, you will need to follow a few basic steps to run this using your own Nexosis account.
 
 - Create a new file in this directory called `api-key.secret`.  Save [your Api key](https://developers.nexosis.com/developer) in this file.
 - Run `./build upload` - Downloads the current data from the DCSS crawl server and upload it as a new dataset named `DCSS` in your Nexosis Api account.

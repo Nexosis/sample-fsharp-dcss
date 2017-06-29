@@ -291,6 +291,6 @@ The absolute effect on the number of wins is increasing each tournament.  Since 
 
 (**
 
-There are certainly more ways to look at this data and discover interesting patterns.  If you would like to keep investigating, take a look at the [source code used in creating this writeup](https://github.com/Nexosis/samples) and let us know what you find.
+There are certainly more ways to look at this data and discover interesting patterns.  If you would like to keep investigating, take a look at the [source code used in creating this writeup](https://github.com/Nexosis/sample-fsharp-dcss) and let us know what you find.
 
 *)
