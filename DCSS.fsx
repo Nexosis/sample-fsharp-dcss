@@ -100,7 +100,7 @@ The dates of the latest tournament for version 0.20 are `2017-05-26` to `2017-06
 *)
 
 (*** do-not-eval ***)
-let latestGamesImpact = nexosis.SessionsCreateImpactSession("DCSS", "Wins", "0.20", "Day", "2017-05-26", "2017-06-11", null, None, null)
+let latestWinsImpact = nexosis.SessionsCreateImpactSession("DCSS", "Wins", "0.20", "Day", "2017-05-26", "2017-06-11", null, None, null)
 
 (**
 
