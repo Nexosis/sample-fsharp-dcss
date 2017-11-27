@@ -176,9 +176,7 @@ Target "checkSessionsComplete" (fun _ ->
 Target "impact" (fun _ ->
     let impactRequests =
         columnsByTournament
-    let estimatedCost =
-        estimateCostOfSessions impactRequests
-    printfn "The Estimated cost to start %i impact sessions is %f" (List.length impactRequests) estimatedCost
+    printfn "This will start %d sessions." (List.length impactRequests)
     printfn "If you wish to continue, press Y"
     let response = System.Console.ReadLine() 
     if System.String.Equals(response, "Y", StringComparison.InvariantCultureIgnoreCase) then

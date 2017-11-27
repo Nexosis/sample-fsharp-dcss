@@ -84,7 +84,7 @@ let getCompleteSessions() =
 
 let downloadResults() = 
     allRequestSessionIds
-    |> List.map nexosis.SessionsRetrieveResults
+    |> List.map (fun s -> nexosis.SessionsRetrieveResults(s, "0.5"))
     |> List.sortBy (fun r -> r.ExtraParameters.["event"])
 
 type Tournament = {
@@ -111,18 +111,18 @@ let allTournaments =
 
 let allRequests = 
     allTournaments 
-    |> Seq.collect (fun tournament ->
-        dataSet.Columns.Keys |> Seq.map (fun columnName ->
-            nexosis.SessionsCreateImpactSession(
-                "DCSS",
-                columnName,
-                tournament.Name,
-                "Day",
-                tournament.Start.ToString("o"),
-                tournament.End.ToString("o"),
-                null, None, null)
+        |> Seq.collect (fun tournament ->
+            dataSet.Columns.Keys
+                |> Seq.map (fun columnName ->
+                    let impactRequest = Nexosis.ImpactSessionData()
+                    impactRequest.DataSourceName <- "DCSS"
+                    impactRequest.TargetColumn <- columnName
+                    impactRequest.EventName <- tournament.Name
+                    impactRequest.StartDate <- Some(tournament.Start)
+                    impactRequest.EndDate <- Some(tournament.End)
+                    nexosis.SessionsCreateImpactSession(impactRequest)
+            )
         )
-    )
 
 let columnsByTournament =
     allTournaments
@@ -132,36 +132,18 @@ let columnsByTournament =
         ) |> Seq.toList
     )
 
-let estimateCostOfSessions sessionParams =
-    sessionParams |> Seq.map (fun (targetColumn, tournament) ->
-        Http.Request((Url + "/v1/sessions/impact"), headers = [ "api-key", apiKey; "Content-Type", HttpContentTypes.Json ],
-            body = TextRequest "{data:[]}",
-            query = [
-                "dataSetName", "DCSS";
-                "targetColumn", targetColumn;
-                "eventName", tournament.Name;
-                "startDate", tournament.Start.ToString("o");
-                "endDate", tournament.End.ToString("o");
-                "isEstimate", "true";
-                ])
-    )
-    |> Seq.fold (fun total estimate -> 
-        let cost = (estimate.Headers.["Nexosis-Request-Cost"]).Split([|' '|]).[0] |> decimal
-        total + cost
-     ) 0.0m
-
 let startSessions sessionParams =
     let sessions =
         sessionParams
         |> List.map (fun (targetColumn, tournament) ->
-            nexosis.SessionsCreateImpactSession(
-                "DCSS",
-                targetColumn,
-                tournament.Name,
-                "Day",
-                tournament.Start.ToString("o"),
-                tournament.End.ToString("o"),
-                null, None, null)) 
+                    let impactRequest = Nexosis.ImpactSessionData()
+                    impactRequest.DataSourceName <- "DCSS"
+                    impactRequest.TargetColumn <- targetColumn
+                    impactRequest.EventName <- tournament.Name
+                    impactRequest.StartDate <- Some(tournament.Start)
+                    impactRequest.EndDate <- Some(tournament.End)
+                    nexosis.SessionsCreateImpactSession(impactRequest)
+        )
 
     sessions 
         |> List.filter (fun s -> s.ExtraParameters.["event"] = "0.20" && s.TargetColumn = "Wins")
@@ -173,7 +155,7 @@ let startSessions sessionParams =
         |> saveSessionIds impactSessionsFile
 
 let downloadOldSessionsAndSaveToFile() =
-    let sessions = nexosis.SessionsListAll("DCSS", null, null, null, None, None)
+    let sessions = nexosis.SessionsListAll("DCSS", null, null, null, null, None, None)
     sessions.Items 
         |> Seq.filter (fun s -> s.Status = "completed")
         |> Seq.distinctBy (fun s -> (s.ExtraParameters.["event"], s.TargetColumn))

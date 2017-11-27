@@ -100,7 +100,13 @@ The dates of the latest tournament for version 0.20 are `2017-05-26` to `2017-06
 *)
 
 (*** do-not-eval ***)
-let latestWinsImpact = nexosis.SessionsCreateImpactSession("DCSS", "Wins", "0.20", "Day", "2017-05-26", "2017-06-11", null, None, null)
+let latestImpactRequest = Nexosis.ImpactSessionData()
+latestImpactRequest.DataSourceName <- "DCSS"
+latestImpactRequest.TargetColumn <- "Wins"
+latestImpactRequest.EventName <- "0.20"
+latestImpactRequest.StartDate <- Some(DateTime.Parse("2017-05-26"))
+latestImpactRequest.EndDate <- Some(DateTime.Parse("2017-06-11"))
+let latestWinsImpact = nexosis.SessionsCreateImpactSession(latestImpactRequest)
 
 (**
 
@@ -175,14 +181,13 @@ let allRequests =
     allTournaments 
     |> List.collect (fun tournament ->
         dataSet.Columns.Keys |> Seq.map (fun columnName ->
-            nexosis.SessionsCreateImpactSession(
-                "DCSS",
-                columnName,
-                tournament.Name,
-                "Day",
-                tournament.Start.ToString("o"),
-                tournament.End.ToString("o"),
-                null, None, null)
+            let impactRequest = Nexosis.ImpactSessionData()
+            impactRequest.DataSourceName <- "DCSS"
+            impactRequest.TargetColumn <- columnName
+            impactRequest.EventName <- tournament.Name
+            impactRequest.StartDate <- Some(tournament.Start)
+            impactRequest.EndDate <- Some(tournament.End)
+            nexosis.SessionsCreateImpactSession(impactRequest)
         ) |> Seq.toList
     )
 
@@ -194,7 +199,8 @@ Once all of these sessions complete, we can easily download all of the results.
 
 (*** do-not-eval ***)
 let downloadResults() = 
-    allRequestSessionIds |> List.map nexosis.SessionsRetrieveResults
+    allRequestSessionIds
+    |> List.map (fun s -> nexosis.SessionsRetrieveResults(s, "0.5"))
 
 (**
 If we look at the pValues accross the impact sessions, we can see that there are generally very low pValue scores.  This means that the tournaments have a high correlation in the measured values changing from their normal levels.
